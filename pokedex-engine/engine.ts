@@ -89,6 +89,12 @@ async function trainAllPokedex() {
     await processNextBatch();
 }
 
+function returnPokedexData(number: number) {
+    // read pokemon.json entry
+    const pokedexData = JSON.parse(readFileSync('./pokemon.json').toString()).pokemon;
+    return pokedexData[number];
+}
+
 /*
 After storing a few images, we can provide an image
 as a query input. The database will use HNSW to quickly
@@ -108,6 +114,8 @@ async function test () {
         originalName = originalName.split(' ')[0];
     }
     console.log(`Pokedex Number: ${originalName}`);
+    const data = returnPokedexData(parseInt(originalName));
+    console.log(`Pokedex Entry: ${JSON.stringify(data)}`);
     writeFileSync(`./result.jpg`, Buffer.from(readFileSync(`./img/${originalName}.png`)).toString('base64') , 'base64');
 }
 
