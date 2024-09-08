@@ -96,18 +96,19 @@ find similar looking images.
 */
 async function test () {
     console.log('Testing image similarity...')
-    const test = await removeImageBackground('./tests/charmander.png');
+    const test = await removeImageBackground('./img/004.png');
     const resImage = await client.graphql.get()
         .withClassName('Pokemon')
-        .withFields('image')
+        .withFields('image text')
         .withNearImage({ image: test })
         .withLimit(1)
         .do();
-
-    // Write result to filesystem
-    console.log(Object.keys(resImage.data.Get.Pokemon[0]));
-    const result = resImage.data.Get.Pokemon[0].image;
-    writeFileSync('./result.jpg', result, 'base64');
+    let originalName: string = resImage.data.Get.Pokemon[0].text;
+    if (originalName.includes(' ')) {
+        originalName = originalName.split(' ')[0];
+    }
+    console.log(`Pokedex Number: ${originalName}`);
+    writeFileSync(`./result.jpg`, Buffer.from(readFileSync(`./img/${originalName}.png`)).toString('base64') , 'base64');
 }
 
 async function initSchema() {
