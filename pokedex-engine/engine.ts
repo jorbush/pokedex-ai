@@ -91,13 +91,16 @@ async function test () {
 }
 
 async function initSchema() {
+    console.log('Initializing schema');
     try {
         await createSchema();
+        console.log('Schema created');
     } catch (error) {
         try {
             await deleteSchema();
             await createSchema();
         } catch (deleteError) {
+            console.error(deleteError);
             process.exit(1);
         }
     }
