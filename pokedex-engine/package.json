@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "hono": "^4.5.11"
+    "hono": "^4.5.11",
+    "weaviate-ts-client": "^2.2.0"
   }
 }
