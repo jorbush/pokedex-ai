@@ -1,6 +1,8 @@
 import weaviate from 'weaviate-ts-client'
 import { readFileSync, readdirSync, writeFileSync} from "fs"
 
+const { removeBackground } = require('@imgly/background-removal-node');
+
 export const client = weaviate.client({
     scheme: 'http',
     host: 'localhost:8080',
@@ -45,28 +47,46 @@ async function deleteSchema () {
         .do();
 }
 
+async function removeImageBackground(imgSource: string): Promise<string> {
+    const blob = await removeBackground(imgSource);
+    const buffer = Buffer.from(await blob.arrayBuffer());
+    return buffer.toString("base64");
+}
+
 /*
 Images must first be converted to base64. Once converted,
 store it to the cooresponding class in the schema. Weaviate
 will automatically use the neural network in the background
 to vectorize it and update the embedding.
 */
-async function trainAllPokedex () {
-    const imgs = readdirSync('./img')
+async function trainAllPokedex() {
+    const imgs = readdirSync('./img');
+    console.log('Training pokedex with images...');
 
-    const promises = imgs.map((async (img) => {
-        const b64 = Buffer.from(readFileSync(`./img/${img}`)).toString('base64')
-        await client.data
-        .creator()
-        .withClassName('Pokemon')
-        .withProperties({
-            image: b64,
-            text: img.split('.')[0].split('_').join(' ')
-        })
-        .do();
-    }))
+    const maxConcurrent = 5;
+    let index = 0;
 
-    await Promise.all(promises)
+    async function processNextBatch() {
+        if (index >= imgs.length) return;
+
+        const batch = imgs.slice(index, index + maxConcurrent);
+        index += maxConcurrent;
+
+        const promises = batch.map(async (img) => {
+            const b64 = Buffer.from(readFileSync(`./img/${img}`)).toString('base64')
+            const name = img.split('.')[0].split('_').join(' ');
+            console.log(`Storing ${name}...`);
+            await client.data.creator().withClassName('Pokemon').withProperties({
+                image: b64,
+                text: name
+            }).do();
+        });
+
+        await Promise.all(promises);
+        await processNextBatch();
+    }
+
+    await processNextBatch();
 }
 
 /*
@@ -74,10 +94,9 @@ After storing a few images, we can provide an image
 as a query input. The database will use HNSW to quickly
 find similar looking images.
 */
-
 async function test () {
-    const test = Buffer.from( readFileSync('./test.png') ).toString('base64');
-
+    console.log('Testing image similarity...')
+    const test = await removeImageBackground('./tests/charmander.png');
     const resImage = await client.graphql.get()
         .withClassName('Pokemon')
         .withFields('image')
@@ -86,6 +105,7 @@ async function test () {
         .do();
 
     // Write result to filesystem
+    console.log(Object.keys(resImage.data.Get.Pokemon[0]));
     const result = resImage.data.Get.Pokemon[0].image;
     writeFileSync('./result.jpg', result, 'base64');
 }

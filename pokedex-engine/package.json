@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@imgly/background-removal-node": "^1.4.5",
     "hono": "^4.5.11",
     "weaviate-ts-client": "^2.2.0"
   }
