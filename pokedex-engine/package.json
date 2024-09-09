@@ -6,8 +6,8 @@
   "description": "Pokedex Engine API",
   "scripts": {
     "start": "bun index.ts",
-    "format": "prettier --write '*.ts'",
-    "check-format": "prettier --check '*.ts'"
+    "format": "prettier --write 'src/**/*.ts' 'index.ts' 'tests/**/*.ts'",
+    "check-format": "prettier --check 'src/**/*.ts' 'index.ts' 'tests/**/*.ts'"
   },
   "devDependencies": {
     "@types/bun": "latest"
