@@ -73,12 +73,18 @@ async function trainAllPokedex(): Promise<void> {
             const batch = imgs.slice(index, index + maxConcurrent);
             index += maxConcurrent;
             const promises = batch.map(async (img) => {
-                const b64 = Buffer.from(readFileSync(`./img/${img}`)).toString('base64')
+                const b64 = Buffer.from(readFileSync(`./img/${img}`)).toString(
+                    'base64'
+                );
                 const name = img.split('.')[0].split('_').join(' ');
-                await client.data.creator().withClassName('Pokemon').withProperties({
-                    image: b64,
-                    text: name
-                }).do();
+                await client.data
+                    .creator()
+                    .withClassName('Pokemon')
+                    .withProperties({
+                        image: b64,
+                        text: name,
+                    })
+                    .do();
             });
             await Promise.all(promises);
             await processNextBatch();
