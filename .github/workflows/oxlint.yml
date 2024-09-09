@@ -11,8 +11,9 @@ on:
 jobs:
   oxlint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pokedex-engine
     steps:
       - uses: actions/checkout@v4
-      - name: Run Oxlint
-        working-directory: pokedex-engine
-        run: npx --yes oxlint@latest --deny-warnings
+      - run: npx --yes oxlint@latest --deny-warnings

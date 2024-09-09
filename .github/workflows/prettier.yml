@@ -9,13 +9,14 @@ on:
 jobs:
   prettier:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pokedex-engine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
-        working-directory: pokedex-engine
         run: bun install
       - name: Prettier Check Format
-        working-directory: pokedex-engine
         run: bun run check-format
