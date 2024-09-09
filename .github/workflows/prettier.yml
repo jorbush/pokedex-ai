@@ -1,4 +1,4 @@
-name: Prettier Format
+name: Prettier Format (pokedex-engine)
 
 on:
   push:

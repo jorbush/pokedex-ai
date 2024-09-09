@@ -1,4 +1,4 @@
-name: Oxlint
+name: Oxlint (pokedex-engine)
 
 on:
   push:
