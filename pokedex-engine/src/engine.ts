@@ -19,6 +19,7 @@ async function initSchema(): Promise<void> {
             await createSchema();
             console.log('Schema recreated');
         } catch (deleteError) {
+            console.error('Failed to create schema:', error);
             console.error('Failed to delete and recreate schema:', deleteError);
             process.exit(1);
         }
