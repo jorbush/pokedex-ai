@@ -1,15 +1,15 @@
-import { Hono } from 'hono'
+import { Hono } from 'hono';
 
-const app = new Hono()
+const app = new Hono();
 
 app.get('/', (c) => {
-  return c.json({ message: 'Hello Bun!' })
-})
+    return c.json({ message: 'Hello Bun!' });
+});
 
-const port = parseInt(process.env.PORT!) || 3000
-console.log(`Running at http://localhost:${port}`)
+const port = parseInt(process.env.PORT!) || 3000;
+console.log(`Running at http://localhost:${port}`);
 
 export default {
-  port,
-  fetch: app.fetch,
-}
+    port,
+    fetch: app.fetch,
+};
