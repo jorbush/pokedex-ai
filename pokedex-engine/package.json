@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "description": "Pokedex Engine API",
   "scripts": {
-    "start": "bun run index.ts",
+    "start": "bun index.ts",
     "format": "prettier --write '*.ts'",
     "check-format": "prettier --check '*.ts'"
   },

@@ -31,13 +31,13 @@ docker-compose up -d
 To run Hono API Server, you can run the following command:
 
 ```bash
-bun run start
+bun start
 ```
 
 ### Format code
 
 ```bash
-bun run format
+bun format
 ```
 
 ### Linter
