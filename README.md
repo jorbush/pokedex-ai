@@ -5,3 +5,22 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 ## Initial Design
 
 ![Initial Design](/design/design.png)
+
+## Run Weaviate
+
+To run Weaviate, you need to have Docker installed. Then, you can run the following command:
+
+```bash
+cd pokemon-engine
+docker-compose up -d
+```
+
+## Run Hono
+
+To run Hono API Server, you can run the following command:
+
+```bash
+cd pokemon-engine
+bun install
+bun run index.ts
+```

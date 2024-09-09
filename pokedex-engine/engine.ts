@@ -8,8 +8,6 @@ export const client = weaviate.client({
     host: 'localhost:8080',
 });
 
-const schemaRes = await client.schema.getter().do();
-
 async function createSchema () {
     const schemaConfig = {
         'class': 'Pokemon',
@@ -60,37 +58,19 @@ will automatically use the neural network in the background
 to vectorize it and update the embedding.
 */
 async function trainAllPokedex() {
-    const imgs = readdirSync('./img');
     console.log('Training pokedex with images...');
-
-    const maxConcurrent = 5;
-    let index = 0;
-
-    async function processNextBatch() {
-        if (index >= imgs.length) return;
-
-        const batch = imgs.slice(index, index + maxConcurrent);
-        index += maxConcurrent;
-
-        const promises = batch.map(async (img) => {
-            const b64 = Buffer.from(readFileSync(`./img/${img}`)).toString('base64')
-            const name = img.split('.')[0].split('_').join(' ');
-            console.log(`Storing ${name}...`);
-            await client.data.creator().withClassName('Pokemon').withProperties({
-                image: b64,
-                text: name
-            }).do();
-        });
-
-        await Promise.all(promises);
-        await processNextBatch();
-    }
-
-    await processNextBatch();
+    const promises = readdirSync('./img').map(async (img) => {
+        const b64 = Buffer.from(readFileSync(`./img/${img}`)).toString('base64')
+        const name = img.split('.')[0].split('_').join(' ');
+        await client.data.creator().withClassName('Pokemon').withProperties({
+            image: b64,
+            text: name
+        }).do();
+    });
+    await Promise.all(promises);
 }
 
 function returnPokedexData(number: number) {
-    // read pokemon.json entry
     const pokedexData = JSON.parse(readFileSync('./pokemon.json').toString()).pokemon;
     return pokedexData[number];
 }
@@ -120,10 +100,9 @@ async function test () {
 }
 
 async function initSchema() {
-    console.log('Initializing schema');
+    console.log('Initializing schema...');
     try {
         await createSchema();
-        console.log('Schema created');
     } catch (error) {
         try {
             await deleteSchema();
@@ -133,6 +112,7 @@ async function initSchema() {
             process.exit(1);
         }
     }
+    console.log('Schema created');
 }
 
 await initSchema();
