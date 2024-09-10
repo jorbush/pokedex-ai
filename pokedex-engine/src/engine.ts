@@ -76,6 +76,10 @@ async function test(): Promise<void> {
     );
 }
 
-await initSchema();
-await trainAllPokedex();
-await test();
+async function quickTest(): Promise<void> {
+    await initSchema();
+    await trainAllPokedex();
+    await test();
+}
+
+await quickTest();
