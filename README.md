@@ -34,6 +34,20 @@ To run Hono API Server, you can run the following command:
 bun start
 ```
 
+### Run tests
+
+```bash
+bun test
+```
+
+### Test Pokedex Engine
+
+To test Weaviate, you can run the following command:
+
+```bash
+bun run tests/quick-engine-test.ts
+```
+
 ### Format code
 
 ```bash
