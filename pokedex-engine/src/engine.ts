@@ -1,8 +1,5 @@
 import { createSchema, deleteSchema, client } from './schema';
-import {
-    removeImageBackground,
-    convertImageToBase64,
-} from './image-processing';
+import { convertImageToBase64 } from './image-processing';
 import { getPokedexData } from './pokedex';
 import { readdirSync, writeFileSync } from 'fs';
 
@@ -76,17 +73,3 @@ export async function returnPokedexEntryFromImageBase64(base64Image: string) {
     };
     return returnData;
 }
-
-async function test(): Promise<void> {
-    console.log('Testing image similarity...');
-    const testImage = await removeImageBackground('./tests_img/snorlax.png');
-    await returnPokedexEntryFromImageBase64(testImage);
-}
-
-async function quickTest(): Promise<void> {
-    await initSchema();
-    await trainAllPokedex();
-    await test();
-}
-
-// await quickTest();
