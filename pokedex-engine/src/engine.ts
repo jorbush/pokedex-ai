@@ -6,7 +6,7 @@ import {
 import { getPokedexData } from './pokedex';
 import { readdirSync, writeFileSync } from 'fs';
 
-async function initSchema(): Promise<void> {
+export async function initSchema(): Promise<void> {
     console.log('Initializing schema...');
     try {
         await createSchema();
@@ -26,7 +26,7 @@ async function initSchema(): Promise<void> {
     }
 }
 
-async function trainAllPokedex(): Promise<void> {
+export async function trainAllPokedex(): Promise<void> {
     try {
         const imgs = readdirSync('./img');
         console.log('Training Pokedex with images...');
@@ -54,26 +54,33 @@ async function trainAllPokedex(): Promise<void> {
     }
 }
 
-async function test(): Promise<void> {
-    console.log('Testing image similarity...');
-    const testImage = await removeImageBackground('./tests_img/snorlax.png');
+export async function returnPokedexEntryFromImageBase64(base64Image: string) {
     const resImage = await client.graphql
         .get()
         .withClassName('Pokemon')
         .withFields('image text')
-        .withNearImage({ image: testImage })
+        .withNearImage({ image: base64Image })
         .withLimit(1)
         .do();
     const originalName: string =
         resImage.data.Get.Pokemon[0].text.split(' ')[0];
     console.log(`Pokedex Number: ${originalName}`);
-    const data = getPokedexData(parseInt(originalName));
-    console.log(`Pokedex Entry: ${JSON.stringify(data)}`);
-    writeFileSync(
-        `./result.jpg`,
-        convertImageToBase64(`./img/${originalName}.png`),
-        'base64'
-    );
+    const pokedexData = getPokedexData(parseInt(originalName));
+    console.log(`Pokedex Entry: ${JSON.stringify(pokedexData)}`);
+    // const pokemonImage: string = resImage.data.Get.Pokemon[0].image;
+    const pokedexImage = convertImageToBase64(`./img/${originalName}.png`);
+    writeFileSync(`./result.jpg`, pokedexImage, 'base64');
+    const returnData = {
+        data: pokedexData,
+        pokedexImage: pokedexImage,
+    };
+    return returnData;
+}
+
+async function test(): Promise<void> {
+    console.log('Testing image similarity...');
+    const testImage = await removeImageBackground('./tests_img/snorlax.png');
+    await returnPokedexEntryFromImageBase64(testImage);
 }
 
 async function quickTest(): Promise<void> {
@@ -82,4 +89,4 @@ async function quickTest(): Promise<void> {
     await test();
 }
 
-await quickTest();
+// await quickTest();
