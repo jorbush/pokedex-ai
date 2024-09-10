@@ -2,6 +2,13 @@
   "name": "pokedex-engine",
   "module": "index.ts",
   "type": "module",
+  "version": "0.1.0",
+  "description": "Pokedex Engine API",
+  "scripts": {
+    "start": "bun index.ts",
+    "format": "prettier --write 'src/**/*.ts' 'index.ts' 'tests/**/*.ts'",
+    "check-format": "prettier --check 'src/**/*.ts' 'index.ts' 'tests/**/*.ts'"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -9,6 +16,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "hono": "^4.5.11"
+    "@imgly/background-removal-node": "^1.4.5",
+    "hono": "^4.5.11",
+    "prettier": "^3.3.3",
+    "weaviate-ts-client": "^2.2.0"
   }
 }
