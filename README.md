@@ -4,7 +4,7 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 
 ## Initial Design
 
-![Initial Design](/design/design.png)
+![Initial Design](/docs/design/design.png)
 
 ## Pokemon Engine
 
