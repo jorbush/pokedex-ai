@@ -123,7 +123,7 @@ export default function App() {
       )}
       <TouchableOpacity
         onPress={openCamera}
-        className="m-6 bg-yellow-300 rounded-full px-6 py-3 flex flex-row items-center justify-center"
+        className="m-6 bg-yellow-400 rounded-full px-6 py-3 flex flex-row items-center justify-center"
         activeOpacity={0.7}
       >
         <Ionicons name="camera" size={24} color="white" />
