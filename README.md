@@ -2,6 +2,12 @@
 
 This project is a real Pokedex implementation using Weaviate (a neural network and a vector database) to recognize the Pokemon. The frontend is a React Native app which uses a Hono server to communicate with Weaviate.
 
+
+
+https://github.com/user-attachments/assets/2b7f7663-61e9-4a0a-8b91-129135c3b43c
+
+
+
 ## Concept Design
 
 ![Initial Design](/docs/design/design.png)
@@ -9,6 +15,16 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 ## Architecture
 
 ![Architecture](/docs/architecture/architecture.png)
+
+> [!NOTE]
+> Both devices need to be connected to the same network.
+
+## Requirements
+
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+- [bun](https://bun.sh/)
+- [Docker](https://www.docker.com/)
 
 ## Pokemon AI App
 

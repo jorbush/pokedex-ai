@@ -11,6 +11,7 @@
     "check-format": "prettier --check '**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@expo/vector-icons": "^14.0.2",
     "expo": "~51.0.28",
     "expo-image-picker": "~15.0.7",
     "expo-status-bar": "~1.12.1",
