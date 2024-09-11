@@ -4,7 +4,55 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 
 ## Initial Design
 
-![Initial Design](/design/design.png)
+![Initial Design](/docs/design/design.png)
+
+## Architecture
+
+_TODO_
+
+## Pokemon AI App
+
+```bash
+cd pokemon-ai-app
+```
+
+### Setup
+
+You need to create a `.env` file in the root of the project with the following content:
+
+```env
+LOCAL_IP='your_local_ip'
+```
+
+> [!NOTE]
+> Replace `your_local_ip` with your local IP address.
+
+To get your local IP address, you can run the following command:
+
+```bash
+ipconfig getifaddr en0
+```
+
+> [!WARNING]
+> This command is for macOS. If you are using another OS, you need to find the equivalent command.
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run app
+
+```bash
+npm run ios
+```
+
+### Format code
+
+```bash
+npm run format
+```
 
 ## Pokemon Engine
 

@@ -6,19 +6,25 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "format": "prettier --write '**/*.{ts,tsx}'",
+    "check-format": "prettier --check '**/*.{ts,tsx}'"
   },
   "dependencies": {
     "expo": "~51.0.28",
+    "expo-image-picker": "~15.0.7",
     "expo-status-bar": "~1.12.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-dotenv": "^3.4.11",
     "tailwindcss": "3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "globals": "^15.9.0",
+    "prettier": "^3.3.3",
     "typescript": "~5.3.3"
   },
   "private": true
