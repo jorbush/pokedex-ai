@@ -8,7 +8,7 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 
 ## Architecture
 
-_TODO_
+![Architecture](/docs/architecture/architecture.png)
 
 ## Pokemon AI App
 
