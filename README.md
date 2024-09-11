@@ -10,6 +10,9 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 
 ![Architecture](/docs/architecture/architecture.png)
 
+> [!NOTE]
+> Both devices need to be connected to the same network.
+
 ## Requirements
 
 - [Node.js](https://nodejs.org/)
