@@ -10,6 +10,13 @@ This project is a real Pokedex implementation using Weaviate (a neural network a
 
 ![Architecture](/docs/architecture/architecture.png)
 
+## Requirements
+
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+- [bun](https://bun.sh/)
+- [Docker](https://www.docker.com/)
+
 ## Pokemon AI App
 
 ```bash
