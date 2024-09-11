@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, Alert, TouchableOpacity, Image, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { LOCAL_IP } from '@env';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,6 +19,11 @@ export interface PokemonData {
     W: number;
 }
 
+export interface PokedexEngineResponse {
+    data: PokemonData;
+    pokedexImage: string;
+}
+
 const PokemonTitle = ({ text }: { text: string }) => (
   <Text className="text-4xl font-bold text-yellow-300 tracking-widest" style={{
     textShadowColor: '#2a75bb',
@@ -29,7 +34,41 @@ const PokemonTitle = ({ text }: { text: string }) => (
   </Text>
 );
 
+const PokemonInfo = ({ data, image }: { data: PokemonData; image: string }) => {
+    console.log('Rendering PokemonInfo with data:', data);
+    console.log('Image data length:', image.length);
+
+    return (
+      <ScrollView className="flex-1 w-full px-4">
+        <Image
+          source={{ uri: `data:image/png;base64,${image}` }}
+          className="w-full h-64 resizeMode-contain my-4"
+          onError={(error) => console.error('Image loading error:', error.nativeEvent.error)}
+        />
+        <Text className="text-2xl font-bold text-white mb-2">{data.N}</Text>
+        <Text className="text-white">Type: {data.T.map(t => t.n).join(', ')}</Text>
+        <Text className="text-white">Height: {data.H / 10}m</Text>
+        <Text className="text-white">Weight: {data.W / 10}kg</Text>
+        <Text className="text-white">Abilities: {data.Ab.map(a => a.n).join(', ')}</Text>
+        <Text className="text-white font-bold mt-2">Base Stats:</Text>
+        {data.St.map((stat, index) => (
+        <Text key={index} className="text-white">
+            {stat.n}: {stat.bs}
+        </Text>
+        ))}
+    </ScrollView>);
+};
+
+
 export default function App() {
+    const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
+    const [pokemonImage, setPokemonImage] = useState<string | null>(null);
+
+    useEffect(() => {
+      console.log('pokemonData updated:', pokemonData !== null);
+      console.log('pokemonImage updated:', pokemonImage !== null);
+    }, [pokemonData, pokemonImage]);
+
   const openCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
@@ -58,9 +97,11 @@ export default function App() {
       });
       const { data } = await response.json();
       const pokedexEntry: PokemonData = data.data;
-      const pokedexImage = data.image;
+      const pokedexImage = data.pokedexImage;
+      console.log('Server response:', Object.keys(data));
       console.log('Server response:', pokedexEntry.N);
-      Alert.alert('Pokemon:', pokedexEntry.N);
+      setPokemonData(pokedexEntry);
+      setPokemonImage(pokedexImage);
     } catch (error) {
       console.error('Error sending image:', error);
       console.log('LocalIP:', LOCAL_IP);
@@ -69,15 +110,26 @@ export default function App() {
   };
 
   return (
-    <View className="flex flex-col h-screen justify-center items-center bg-red-600">
-      <PokemonTitle text="Pokédex AI" />
+    <View className="flex flex-col h-screen bg-red-600 py-10">
+      <View className="pt-12 pb-4 items-center">
+        <PokemonTitle text="Pokédex AI" />
+      </View>
+      {pokemonData && pokemonImage ? (
+        <PokemonInfo data={pokemonData} image={pokemonImage} />
+      ) : (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-white text-lg">Scan a Pokémon to see its data!</Text>
+        </View>
+      )}
       <TouchableOpacity
         onPress={openCamera}
-        className="mt-8 bg-yellow-300 rounded-full px-6 py-3 flex flex-row items-center"
+        className="m-6 bg-yellow-300 rounded-full px-6 py-3 flex flex-row items-center justify-center"
         activeOpacity={0.7}
       >
         <Ionicons name="camera" size={24} color="white" />
-        <Text className="text-white font-bold text-lg ml-2">Scan Pokemon</Text>
+        <Text className="text-white font-bold text-lg ml-2">
+          {pokemonData ? "Scan Again" : "Scan Pokémon"}
+        </Text>
       </TouchableOpacity>
       <StatusBar style="auto" />
     </View>
