@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
     Text,
@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { LOCAL_IP } from '@env';
@@ -45,21 +46,20 @@ const PokemonTitle = ({ text }: { text: string }) => (
 );
 
 const PokemonInfo = ({ data, image }: { data: PokemonData; image: string }) => {
-    console.log('Rendering PokemonInfo with data:', data);
-    console.log('Image data length:', image.length);
-
     return (
         <ScrollView className="flex-1 w-full px-4">
-            <Image
-                source={{ uri: `data:image/png;base64,${image}` }}
-                className="w-full h-64 resizeMode-contain my-4"
-                onError={(error) =>
-                    console.error(
-                        'Image loading error:',
-                        error.nativeEvent.error
-                    )
-                }
-            />
+            <View className="items-center my-4">
+                <Image
+                    source={{ uri: `data:image/png;base64,${image}` }}
+                    className="w-64 h-64 resizeMode-contain"
+                    onError={(error) =>
+                        console.error(
+                            'Image loading error:',
+                            error.nativeEvent.error
+                        )
+                    }
+                />
+            </View>
             <Text className="text-2xl font-bold text-white mb-2">{data.N}</Text>
             <Text className="text-white">
                 Type: {data.T.map((t) => t.n).join(', ')}
@@ -85,11 +85,7 @@ const PokemonInfo = ({ data, image }: { data: PokemonData; image: string }) => {
 export default function App() {
     const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
     const [pokemonImage, setPokemonImage] = useState<string | null>(null);
-
-    useEffect(() => {
-        console.log('pokemonData updated:', pokemonData !== null);
-        console.log('pokemonImage updated:', pokemonImage !== null);
-    }, [pokemonData, pokemonImage]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const openCamera = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -109,6 +105,7 @@ export default function App() {
     };
 
     const sendImageToServer = async (base64Image: string | undefined) => {
+        setIsLoading(true);
         try {
             const response = await fetch(`http://${LOCAL_IP}:3000/pokedex`, {
                 method: 'POST',
@@ -117,17 +114,16 @@ export default function App() {
                 },
                 body: JSON.stringify({ image: base64Image }),
             });
-            const { data } = await response.json();
-            const pokedexEntry: PokemonData = data.data;
-            const pokedexImage = data.pokedexImage;
-            console.log('Server response:', Object.keys(data));
-            console.log('Server response:', pokedexEntry.N);
-            setPokemonData(pokedexEntry);
-            setPokemonImage(pokedexImage);
+            const responseData: PokedexEngineResponse = (await response.json())
+                .data;
+            setPokemonData(responseData.data);
+            setPokemonImage(responseData.pokedexImage);
         } catch (error) {
             console.error('Error sending image:', error);
             console.log('LocalIP:', LOCAL_IP);
             Alert.alert('Error', 'Failed to send the image to the server');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -136,7 +132,17 @@ export default function App() {
             <View className="pt-12 pb-4 items-center">
                 <PokemonTitle text="Pokédex AI" />
             </View>
-            {pokemonData && pokemonImage ? (
+            {isLoading ? (
+                <View className="flex-1 justify-center items-center">
+                    <ActivityIndicator
+                        size="large"
+                        color="#FFDE00"
+                    />
+                    <Text className="text-white text-lg mt-4">
+                        Analyzing Pokémon...
+                    </Text>
+                </View>
+            ) : pokemonData && pokemonImage ? (
                 <PokemonInfo
                     data={pokemonData}
                     image={pokemonImage}
@@ -152,6 +158,7 @@ export default function App() {
                 onPress={openCamera}
                 className="m-6 bg-yellow-400 rounded-full px-6 py-3 flex flex-row items-center justify-center"
                 activeOpacity={0.7}
+                disabled={isLoading}
             >
                 <Ionicons
                     name="camera"
